@@ -1,36 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Tower Defense Game</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Harvest & Hearth - Prototype P1</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="gameContainer">
-        <canvas id="gameCanvas" width="360" height="640"></canvas>
-        <div id="gameStatus">
-            Thời gian: <span id="timer">120</span>s | Vàng: <span id="gold">1000</span>
-        </div>
-        <div id="waveStatus">
-            Wave: <span id="wave">1</span> | Quái: <span id="enemies">0/5</span>
-        </div>
-        <div id="towerButtons">
-            <div class="towerBtn" id="tower1" style="background-color: #3498db;">
-                <div class="cost">50</div>
-            </div>
-            <div class="towerBtn" id="tower2" style="background-color: #e74c3c;">
-                <div class="cost">100</div>
-            </div>
-            <div class="towerBtn" id="tower3" style="background-color: #1abc9c;">
-                <div class="cost">75</div>
-            </div>
-            <div class="towerBtn" id="tower4" style="background-color: #f39c12;">
-                <div class="cost">75</div>
-            </div>
-        </div>
-        <button id="startButton">Bắt đầu chơi</button>
-    </div>
-    
-    <script src="game.js"></script>
+  <h1>Harvest & Hearth - Demo P1</h1>
+  <div id="game-root">
+    <div id="field-grid"></div>
+    <div id="silo-panel"></div>
+    <div id="mill-panel"></div>
+    <div id="contract-panel"></div>
+    <div id="social-panel"></div>
+  </div>
+  <script src="utils.js"></script>
+  <script src="balance.js"></script>
+  <script src="crops.js"></script>
+  <script src="map.js"></script>
+  <script src="silo.js"></script>
+  <script src="mechine.js"></script>
+  <script src="contract.js"></script>
+  <script src="upgrade.js"></script>
+  <script src="social.js"></script>
+  <script src="save.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

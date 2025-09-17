@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Upgrade System</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+    .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+    .info { background: #d1ecf1; color: #0c5460; }
+    button { padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+    .test-btn { background: #007bff; color: white; }
+    .test-btn:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+  <h1>Test Upgrade System</h1>
+  
+  <div class="test-section">
+    <h3>Manual Test Controls</h3>
+    <button class="test-btn" onclick="addTestResources()">Add Test Resources (100 coins + 5 pipe parts)</button>
+    <button class="test-btn" onclick="testUpgradeSystem()">Test Upgrade System</button>
+    <button class="test-btn" onclick="showCurrentState()">Show Current State</button>
+  </div>
+  
+  <div id="test-results"></div>
+  
+  <script src="utils.js"></script>
+  <script src="silo.js"></script>
+  <script src="contract.js"></script>
+  <script src="upgrade.js"></script>
+  <script>
+    function addTestResources() {
+      ContractManager.coins = 100;
+      ContractManager.pipeParts = 5;
+      showCurrentState();
+    }
+    
+    function testUpgradeSystem() {
+      const results = document.getElementById('test-results');
+      results.innerHTML = '<h3>Upgrade System Test Results:</h3>';
+      
+      // Test 1: Check if UpgradeManager exists
+      if (window.UpgradeManager) {
+        results.innerHTML += '<div class="test-result success">✓ UpgradeManager loaded successfully</div>';
+      } else {
+        results.innerHTML += '<div class="test-result error">✗ UpgradeManager not found</div>';
+        return;
+      }
+      
+      // Test 2: Check upgrade costs
+      const wheatCost = UpgradeManager.upgradeCosts.wheat;
+      results.innerHTML += `<div class="test-result info">Wheat upgrade cost: ${wheatCost.pipeParts} pipe parts + ${wheatCost.coins} coins</div>`;
+      
+      // Test 3: Check if can upgrade
+      const canUpgradeWheat = UpgradeManager.canUpgrade('wheat');
+      results.innerHTML += `<div class="test-result ${canUpgradeWheat ? 'success' : 'error'}">
+        ${canUpgradeWheat ? '✓' : '✗'} Can upgrade wheat silo: ${canUpgradeWheat}
+      </div>`;
+      
+      // Test 4: Test upgrade function
+      if (canUpgradeWheat) {
+        const oldBandwidth = SiloManager.wheat.bandwidth;
+        const success = UpgradeManager.upgrade('wheat');
+        const newBandwidth = SiloManager.wheat.bandwidth;
+        
+        results.innerHTML += `<div class="test-result ${success ? 'success' : 'error'}">
+          ${success ? '✓' : '✗'} Upgrade wheat silo: ${success ? 'SUCCESS' : 'FAILED'}
+          ${success ? `(Bandwidth: ${oldBandwidth} → ${newBandwidth})` : ''}
+        </div>`;
+      }
+      
+      // Test 5: Check popup function
+      try {
+        UpgradeManager.showUpgradePopup('flour');
+        results.innerHTML += '<div class="test-result success">✓ Upgrade popup function works</div>';
+      } catch (error) {
+        results.innerHTML += `<div class="test-result error">✗ Upgrade popup error: ${error.message}</div>`;
+      }
+    }
+    
+    function showCurrentState() {
+      const results = document.getElementById('test-results');
+      results.innerHTML = '<h3>Current Game State:</h3>';
+      
+      results.innerHTML += `
+        <div class="test-result info">
+          <strong>Resources:</strong><br>
+          Coins: ${ContractManager.coins}<br>
+          Pipe Parts: ${ContractManager.pipeParts}
+        </div>
+      `;
+      
+      results.innerHTML += `
+        <div class="test-result info">
+          <strong>Silo Bandwidths:</strong><br>
+          Wheat: ${SiloManager.wheat.bandwidth}<br>
+          Flour: ${SiloManager.flour.bandwidth}<br>
+          Bread: ${SiloManager.bread.bandwidth}
+        </div>
+      `;
+      
+      results.innerHTML += `
+        <div class="test-result info">
+          <strong>Upgrade Availability:</strong><br>
+          Wheat: ${UpgradeManager.canUpgrade('wheat') ? 'Yes' : 'No'}<br>
+          Flour: ${UpgradeManager.canUpgrade('flour') ? 'Yes' : 'No'}<br>
+          Bread: ${UpgradeManager.canUpgrade('bread') ? 'Yes' : 'No'}
+        </div>
+      `;
+    }
+    
+    // Auto-run initial test
+    window.onload = function() {
+      showCurrentState();
+    };
+  </script>
+</body>
+</html> 

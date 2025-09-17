@@ -1,91 +1,220 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #333;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+body { 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #232323; 
+  margin: 0;
+  padding: 10px;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-#gameContainer {
-    position: relative;
-    width: 360px;
-    height: 640px;
-    background-color: #2c3e50;
-    border: 3px solid #444;
-    overflow: hidden;
+#game-root { 
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  gap: 15px; 
+  margin: 0 auto; 
+  max-width: 1920px;
+  height: 800px;
+  align-items: start;
 }
 
-#gameStatus {
-    position: absolute;
-    top: 10px;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 14px;
-    background-color: rgba(0,0,0,0.5);
-    padding: 5px 0;
+#field-grid { 
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(255,255,255,0.1);
+  padding: 15px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  height: fit-content;
 }
 
-#waveStatus {
-    position: absolute;
-    top: 40px;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 14px;
-    background-color: rgba(0,0,0,0.5);
-    padding: 5px 0;
+.field-tiles-container {
+  display: grid; 
+  grid-template-columns: repeat(3, 48px); 
+  gap: 8px;
 }
 
-#towerButtons {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background-color: rgba(0,0,0,0.7);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+.crop-selector {
+  margin-bottom: 10px;
 }
 
-.towerBtn {
-    width: 50px;
-    height: 50px;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid white;
+.crop-selector-btn {
+  background: rgba(255,255,255,0.9);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
 }
 
-.towerBtn .cost {
-    font-size: 10px;
-    margin-top: 5px;
+.crop-selector-btn:hover {
+  background: rgba(255,255,255,1);
+  border-color: #4CAF50;
+  transform: translateY(-1px);
 }
 
-#startButton {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 15px 30px;
-    font-size: 24px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
+.crop-selector-btn small {
+  display: block;
+  font-size: 10px;
+  color: #666;
+  margin-top: 2px;
 }
 
-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
+.field-tile { 
+  width: 48px; 
+  height: 48px; 
+  border: 2px solid rgba(255,255,255,0.3); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-size: 20px; 
+  background: rgba(255,255,255,0.9); 
+  cursor: pointer; 
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
+
+.field-tile:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.field-tile.growing { 
+  background: linear-gradient(45deg, #ffe89e, #ffd54f); 
+  border-color: #ffb300;
+}
+
+.field-tile.ready { 
+  background: linear-gradient(45deg, #b7f397, #81c784); 
+  border-color: #4caf50;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+#silo-panel, #mill-panel, #contract-panel, #social-panel, #debug-hud { 
+  min-width: 180px; 
+  max-width: 220px;
+  background: rgba(255,255,255,0.95);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+  height: fit-content;
+  max-height: 750px;
+  overflow-y: auto;
+}
+
+.silo-item, .machine-item { 
+  margin-bottom: 12px; 
+  padding: 10px; 
+  border: 1px solid #e0e0e0; 
+  border-radius: 8px; 
+  background: #fff; 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.silo-item:hover, .machine-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.silo-item.debuffed { 
+  border-color: #ef4444; 
+  background: linear-gradient(45deg, #fef2f2, #fee2e2);
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* Upgrade System Styles */
+.upgrade-section { margin-top: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa; }
+.upgrade-silo-btn { width: 100%; padding: 8px; margin: 4px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff; cursor: pointer; font-size: 12px; }
+.upgrade-silo-btn.ready { background: #e3f2fd; border-color: #2196f3; color: #1976d2; }
+.upgrade-silo-btn.ready:hover { background: #bbdefb; }
+.upgrade-silo-btn.disabled { background: #f5f5f5; color: #999; cursor: not-allowed; }
+
+/* Popup Styles */
+.upgrade-popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.upgrade-popup { background: white; border-radius: 12px; padding: 20px; min-width: 300px; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+.popup-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #666; }
+.popup-content { margin-bottom: 20px; }
+.current-stats, .upgrade-cost, .resource-check { margin: 10px 0; }
+.sufficient { color: #4CAF50; }
+.insufficient { color: #f44336; }
+.popup-actions { display: flex; gap: 10px; }
+.upgrade-btn, .cancel-btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+.upgrade-btn.ready { background: #4CAF50; color: white; }
+.upgrade-btn.disabled { background: #ccc; color: #666; cursor: not-allowed; }
+.cancel-btn { background: #f5f5f5; color: #333; }
+
+/* Notification Styles */
+.upgrade-notification, .boost-notification, .save-notification, .load-notification { 
+  position: fixed; 
+  top: 20px; 
+  right: 20px; 
+  padding: 15px; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+  z-index: 1001; 
+  animation: slideIn 0.3s ease-out; 
+}
+
+.upgrade-notification { background: #4CAF50; color: white; }
+.boost-notification { background: #2196F3; color: white; }
+.boost-expired-notification { background: #FF9800; color: white; }
+.save-notification { background: #9C27B0; color: white; }
+.load-notification { background: #607D8B; color: white; }
+
+@keyframes slideIn { 
+  from { transform: translateX(100%); opacity: 0; } 
+  to { transform: translateX(0); opacity: 1; } 
+}
+
+/* Social Panel Styles */
+.boost-section, .stats-section, .debug-section { margin: 10px 0; }
+.boost-item { 
+  display: flex; 
+  justify-content: space-between; 
+  padding: 8px; 
+  margin: 4px 0; 
+  background: #f0f8ff; 
+  border-radius: 6px; 
+  border-left: 4px solid #2196F3;
+}
+.boost-controls { margin-top: 10px; }
+.boost-btn { 
+  width: 100%; 
+  padding: 10px; 
+  margin: 5px 0; 
+  border: none; 
+  border-radius: 6px; 
+  background: linear-gradient(45deg, #2196F3, #21CBF3); 
+  color: white; 
+  cursor: pointer; 
+  transition: all 0.2s ease;
+}
+.boost-btn:hover { 
+  transform: translateY(-1px); 
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+/* Debuff Warning Styles */
+.debuff-warning { color: #ef4444; font-weight: bold; }
+.warning { color: #f59e0b; font-weight: bold; }
+.debuff-info { margin-top: 8px; font-size: 12px; }

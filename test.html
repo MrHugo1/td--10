@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Harvest Function</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <h1>Test Harvest Function</h1>
+  <div id="test-results"></div>
+  
+  <script src="utils.js"></script>
+  <script src="silo.js"></script>
+  <script>
+    function runTests() {
+      const results = document.getElementById('test-results');
+      
+      // Test 1: Check if SiloManager exists
+      if (window.SiloManager) {
+        results.innerHTML += '<div class="test-result success">✓ SiloManager loaded successfully</div>';
+      } else {
+        results.innerHTML += '<div class="test-result error">✗ SiloManager not found</div>';
+        return;
+      }
+      
+      // Test 2: Check if addToSilo function works
+      const initialWheat = SiloManager.wheat.stored;
+      SiloManager.addToSilo("wheat", 5);
+      if (SiloManager.wheat.stored === initialWheat + 5) {
+        results.innerHTML += '<div class="test-result success">✓ addToSilo function works correctly</div>';
+      } else {
+        results.innerHTML += '<div class="test-result error">✗ addToSilo function failed</div>';
+      }
+      
+      // Test 3: Check if CROP object exists
+      if (typeof CROP !== 'undefined' && CROP.wheat) {
+        results.innerHTML += '<div class="test-result success">✓ CROP object loaded successfully</div>';
+      } else {
+        results.innerHTML += '<div class="test-result error">✗ CROP object not found</div>';
+      }
+      
+      // Test 4: Check if now() function works
+      const currentTime = now();
+      if (typeof currentTime === 'number' && currentTime > 0) {
+        results.innerHTML += '<div class="test-result success">✓ now() function works correctly</div>';
+      } else {
+        results.innerHTML += '<div class="test-result error">✗ now() function failed</div>';
+      }
+    }
+    
+    // Run tests when page loads
+    window.onload = runTests;
+  </script>
+</body>
+</html> 
